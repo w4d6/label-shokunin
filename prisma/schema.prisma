@@ -30,3 +30,14 @@ model Session {
   collaborator  Boolean?  @default(false)
   emailVerified Boolean?  @default(false)
 }
+
+// Track shop subscription and usage
+model ShopUsage {
+  id              String    @id @default(cuid())
+  shop            String    @unique
+  currentPlan     String?   // ume_plan, take_plan, matsu_plan
+  labelsThisMonth Int       @default(0)
+  monthStartDate  DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}

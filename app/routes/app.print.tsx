@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { useNavigate } from "@remix-run/react";
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useNavigate, useLoaderData, useFetcher } from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -23,6 +24,7 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "@shopify/polaris-icons";
 import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
+import { BILLING_PLANS, PLAN_DETAILS } from "../utils/plans";
 import { t } from "~/utils/i18n";
 import { LabelPreview } from "~/components/LabelPreview";
 import { LABEL_TEMPLATES, LABEL_PRINTER_PRESETS, getPresetById } from "~/utils/templates";
@@ -34,21 +36,82 @@ import type {
   LabelSize,
 } from "~/types/label";
 import { DEFAULT_LABEL_SETTINGS } from "~/types/label";
+import { getRemainingLabels, incrementLabelCount, updateShopPlan } from "../utils/billing.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
-  return null;
+  const { session, billing } = await authenticate.admin(request);
+  const shop = session.shop;
+
+  // Check subscription status
+  const { hasActivePayment, appSubscriptions } = await billing.check({
+    plans: [BILLING_PLANS.UME, BILLING_PLANS.TAKE, BILLING_PLANS.MATSU],
+    isTest: true,
+  });
+
+  let currentPlan: string | null = null;
+  if (hasActivePayment && appSubscriptions.length > 0) {
+    currentPlan = appSubscriptions[0].name;
+    await updateShopPlan(shop, currentPlan as any);
+  }
+
+  const usage = await getRemainingLabels(shop);
+  const planDetails = currentPlan ? PLAN_DETAILS[currentPlan as keyof typeof PLAN_DETAILS] : null;
+
+  return json({
+    hasActivePayment,
+    currentPlan,
+    usage,
+    planDetails,
+  });
+};
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const { session, billing } = await authenticate.admin(request);
+  const shop = session.shop;
+  const formData = await request.formData();
+  const labelCount = parseInt(formData.get("labelCount") as string, 10);
+
+  // Check subscription
+  const { hasActivePayment } = await billing.check({
+    plans: [BILLING_PLANS.UME, BILLING_PLANS.TAKE, BILLING_PLANS.MATSU],
+    isTest: true,
+  });
+
+  if (!hasActivePayment) {
+    return json({ success: false, error: "プランを選択してください" }, { status: 403 });
+  }
+
+  // Increment label count
+  const result = await incrementLabelCount(shop, labelCount);
+
+  if (!result.allowed) {
+    return json({
+      success: false,
+      error: `今月の印刷上限（${result.limit}枚）に達しました。プランをアップグレードしてください。`,
+      remaining: result.remaining,
+      limit: result.limit,
+    }, { status: 403 });
+  }
+
+  return json({
+    success: true,
+    remaining: result.remaining,
+    limit: result.limit,
+  });
 };
 
 export default function Print() {
   const navigate = useNavigate();
   const shopify = useAppBridge();
   const printRef = useRef<HTMLDivElement>(null);
+  const { hasActivePayment, currentPlan, usage, planDetails } = useLoaderData<typeof loader>();
+  const fetcher = useFetcher<typeof action>();
 
   const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([]);
   const [selectedTemplateId, setSelectedTemplateId] = useState("simple");
   const [settings, setSettings] = useState<LabelSettings>(DEFAULT_LABEL_SETTINGS);
   const [isPrinting, setIsPrinting] = useState(false);
+  const [printError, setPrintError] = useState<string | null>(null);
 
   // Label Printer Settings
   const [selectedPresetId, setSelectedPresetId] = useState<string>("generic-40x28");
@@ -443,6 +506,29 @@ export default function Print() {
     { label: "── 汎用 ──", value: "_header_generic", disabled: true },
     ...presetsByBrand.generic.map(p => ({ label: p.name, value: p.id })),
   ];
+
+  // Show subscription required message
+  if (!hasActivePayment) {
+    return (
+      <Page
+        backAction={{ content: "テンプレート", url: "/app/templates" }}
+        title={t("editor.title")}
+      >
+        <TitleBar title={t("editor.title")} />
+        <Card>
+          <BlockStack gap="400">
+            <Banner
+              title="プランを選択してください"
+              tone="warning"
+              action={{ content: "プランを選択", url: "/app/billing" }}
+            >
+              <p>ラベルを印刷するには、プランのご登録が必要です。7日間の無料トライアルをお試しください。</p>
+            </Banner>
+          </BlockStack>
+        </Card>
+      </Page>
+    );
+  }
 
   if (selectedProducts.length === 0) {
     return (

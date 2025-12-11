@@ -28,6 +28,7 @@ export default function App() {
         <Link to="/app/templates">テンプレート</Link>
         <Link to="/app/print">印刷</Link>
         <Link to="/app/settings">設定</Link>
+        <Link to="/app/billing">料金プラン</Link>
       </NavMenu>
       <Outlet />
     </AppProvider>
