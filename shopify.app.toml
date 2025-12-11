@@ -4,14 +4,18 @@
 name = "ラベル職人"
 handle = "label-shokunin"
 client_id = "15e1c7f7e9a77d5e05f0c0e75644f4e8"
-application_url = "https://localhost"
+application_url = "https://label-shokunin.fly.dev"
 embedded = true
 
 [access_scopes]
 scopes = "read_products,read_inventory,read_locations"
 
 [auth]
-redirect_urls = ["https://localhost/auth/callback"]
+redirect_urls = [
+  "https://label-shokunin.fly.dev/auth/callback",
+  "https://label-shokunin.fly.dev/auth/shopify/callback",
+  "https://label-shokunin.fly.dev/api/auth/callback"
+]
 
 [webhooks]
 api_version = "2025-01"

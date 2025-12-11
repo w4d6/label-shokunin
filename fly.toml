@@ -1,0 +1,39 @@
+# fly.toml app configuration file generated for label-shokunin on 2025-12-11T12:57:03+09:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'label-shokunin'
+primary_region = 'nrt'
+
+[build]
+
+[env]
+  PORT = '3000'
+  SCOPES = 'read_inventory,read_locations,read_products'
+  SHOPIFY_API_KEY = '15e1c7f7e9a77d5e05f0c0e75644f4e8'
+  SHOPIFY_APP_URL = 'https://label-shokunin.fly.dev'
+
+[processes]
+  app = 'node ./dbsetup.js npm run docker-start'
+
+[[mounts]]
+  source = 'data'
+  destination = '/data'
+  auto_extend_size_threshold = 80
+  auto_extend_size_increment = '1GB'
+  auto_extend_size_limit = '10GB'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 1024
