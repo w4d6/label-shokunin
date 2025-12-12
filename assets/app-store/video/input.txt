@@ -1,0 +1,7 @@
+file '../resized/screenshot-1-home.png'
+duration 5
+file '../resized/screenshot-2-preview.png'
+duration 5
+file '../resized/screenshot-3-settings.png'
+duration 5
+file '../resized/screenshot-3-settings.png'
