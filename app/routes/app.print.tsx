@@ -573,8 +573,8 @@ export default function Print() {
                     {t("editor.preview")}
                   </Text>
                   <InlineStack gap="200">
-                    <Badge tone="info">{labelWidth}mm × {labelHeight}mm</Badge>
-                    <Badge>{selectedProducts.length}件のラベル</Badge>
+                    <Badge tone="info">{`${labelWidth}mm × ${labelHeight}mm`}</Badge>
+                    <Badge>{`${selectedProducts.length}件のラベル`}</Badge>
                   </InlineStack>
                 </InlineStack>
 

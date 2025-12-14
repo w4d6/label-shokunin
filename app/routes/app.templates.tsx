@@ -84,7 +84,7 @@ export default function Templates() {
         {selectedProducts.length > 0 && (
           <Card>
             <InlineStack gap="200" align="center">
-              <Badge tone="info">{selectedProducts.length}件の商品を選択中</Badge>
+              <Badge tone="info">{`${selectedProducts.length}件の商品を選択中`}</Badge>
               <Button variant="plain" onClick={() => navigate("/app/products")}>
                 商品を変更
               </Button>

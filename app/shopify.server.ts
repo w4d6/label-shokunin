@@ -7,10 +7,10 @@ import {
 } from "@shopify/shopify-app-remix/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import prisma from "./db.server";
-import { BILLING_PLANS } from "./utils/plans";
+import { BILLING_PLANS, type PlanType } from "./utils/plans";
 
 // Re-export for convenience
-export { BILLING_PLANS, PLAN_DETAILS } from "./utils/plans";
+export { BILLING_PLANS, PLAN_DETAILS, type PlanType } from "./utils/plans";
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
@@ -22,22 +22,34 @@ const shopify = shopifyApp({
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
   billing: {
-    [BILLING_PLANS.UME]: {
-      amount: 980,
-      currencyCode: "JPY",
-      interval: BillingInterval.Every30Days,
+    ume_plan: {
+      lineItems: [
+        {
+          amount: 980,
+          currencyCode: "JPY",
+          interval: BillingInterval.Every30Days,
+        },
+      ],
       trialDays: 7,
     },
-    [BILLING_PLANS.TAKE]: {
-      amount: 1980,
-      currencyCode: "JPY",
-      interval: BillingInterval.Every30Days,
+    take_plan: {
+      lineItems: [
+        {
+          amount: 1980,
+          currencyCode: "JPY",
+          interval: BillingInterval.Every30Days,
+        },
+      ],
       trialDays: 7,
     },
-    [BILLING_PLANS.MATSU]: {
-      amount: 4980,
-      currencyCode: "JPY",
-      interval: BillingInterval.Every30Days,
+    matsu_plan: {
+      lineItems: [
+        {
+          amount: 4980,
+          currencyCode: "JPY",
+          interval: BillingInterval.Every30Days,
+        },
+      ],
       trialDays: 7,
     },
   },

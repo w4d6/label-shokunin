@@ -64,7 +64,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   // Request billing
   await billing.request({
-    plan: selectedPlan,
+    plan: selectedPlan as "ume_plan" | "take_plan" | "matsu_plan",
     isTest: true, // Set to false for production
     returnUrl: `https://${process.env.SHOPIFY_APP_URL?.replace("https://", "")}/app/billing`,
   });
@@ -125,7 +125,7 @@ export default function BillingPage() {
                       ¥980
                       <Text as="span" variant="bodyMd" tone="subdued">/月</Text>
                     </Text>
-                    <Text variant="bodyMd" tone="subdued">
+                    <Text variant="bodyMd" as="p" tone="subdued">
                       7日間の無料トライアル付き
                     </Text>
                   </BlockStack>
@@ -133,10 +133,10 @@ export default function BillingPage() {
                   <Divider />
 
                   <BlockStack gap="200">
-                    <Text variant="bodyMd">✓ 月100枚までのラベル印刷</Text>
-                    <Text variant="bodyMd">✓ 全テンプレート利用可</Text>
-                    <Text variant="bodyMd">✓ JAN/EANコード対応</Text>
-                    <Text variant="bodyMd">✓ メールサポート</Text>
+                    <Text variant="bodyMd" as="p">✓ 月100枚までのラベル印刷</Text>
+                    <Text variant="bodyMd" as="p">✓ 全テンプレート利用可</Text>
+                    <Text variant="bodyMd" as="p">✓ JAN/EANコード対応</Text>
+                    <Text variant="bodyMd" as="p">✓ メールサポート</Text>
                   </BlockStack>
 
                   <Button
@@ -170,7 +170,7 @@ export default function BillingPage() {
                       ¥1,980
                       <Text as="span" variant="bodyMd" tone="subdued">/月</Text>
                     </Text>
-                    <Text variant="bodyMd" tone="subdued">
+                    <Text variant="bodyMd" as="p" tone="subdued">
                       7日間の無料トライアル付き
                     </Text>
                   </BlockStack>
@@ -178,11 +178,11 @@ export default function BillingPage() {
                   <Divider />
 
                   <BlockStack gap="200">
-                    <Text variant="bodyMd">✓ 月500枚までのラベル印刷</Text>
-                    <Text variant="bodyMd">✓ 全テンプレート利用可</Text>
-                    <Text variant="bodyMd">✓ JAN/EANコード対応</Text>
-                    <Text variant="bodyMd">✓ 優先メールサポート</Text>
-                    <Text variant="bodyMd">✓ カスタムテンプレート</Text>
+                    <Text variant="bodyMd" as="p">✓ 月500枚までのラベル印刷</Text>
+                    <Text variant="bodyMd" as="p">✓ 全テンプレート利用可</Text>
+                    <Text variant="bodyMd" as="p">✓ JAN/EANコード対応</Text>
+                    <Text variant="bodyMd" as="p">✓ 優先メールサポート</Text>
+                    <Text variant="bodyMd" as="p">✓ カスタムテンプレート</Text>
                   </BlockStack>
 
                   <Button
@@ -213,7 +213,7 @@ export default function BillingPage() {
                       ¥4,980
                       <Text as="span" variant="bodyMd" tone="subdued">/月</Text>
                     </Text>
-                    <Text variant="bodyMd" tone="subdued">
+                    <Text variant="bodyMd" as="p" tone="subdued">
                       7日間の無料トライアル付き
                     </Text>
                   </BlockStack>
@@ -221,12 +221,12 @@ export default function BillingPage() {
                   <Divider />
 
                   <BlockStack gap="200">
-                    <Text variant="bodyMd">✓ <strong>無制限</strong>のラベル印刷</Text>
-                    <Text variant="bodyMd">✓ 全テンプレート利用可</Text>
-                    <Text variant="bodyMd">✓ JAN/EANコード対応</Text>
-                    <Text variant="bodyMd">✓ 優先サポート</Text>
-                    <Text variant="bodyMd">✓ カスタムテンプレート</Text>
-                    <Text variant="bodyMd">✓ API連携</Text>
+                    <Text variant="bodyMd" as="p">✓ <strong>無制限</strong>のラベル印刷</Text>
+                    <Text variant="bodyMd" as="p">✓ 全テンプレート利用可</Text>
+                    <Text variant="bodyMd" as="p">✓ JAN/EANコード対応</Text>
+                    <Text variant="bodyMd" as="p">✓ 優先サポート</Text>
+                    <Text variant="bodyMd" as="p">✓ カスタムテンプレート</Text>
+                    <Text variant="bodyMd" as="p">✓ API連携</Text>
                   </BlockStack>
 
                   <Button
@@ -248,26 +248,26 @@ export default function BillingPage() {
             <BlockStack gap="300">
               <Text variant="headingMd" as="h3">よくある質問</Text>
               <BlockStack gap="200">
-                <Text variant="bodyMd" fontWeight="semibold">
+                <Text variant="bodyMd" as="p" fontWeight="semibold">
                   Q: プランはいつでも変更できますか？
                 </Text>
-                <Text variant="bodyMd">
+                <Text variant="bodyMd" as="p">
                   A: はい、いつでもプランの変更・アップグレードが可能です。
                 </Text>
               </BlockStack>
               <BlockStack gap="200">
-                <Text variant="bodyMd" fontWeight="semibold">
+                <Text variant="bodyMd" as="p" fontWeight="semibold">
                   Q: 月の途中でプランを変更した場合、料金はどうなりますか？
                 </Text>
-                <Text variant="bodyMd">
+                <Text variant="bodyMd" as="p">
                   A: 日割り計算で調整されます。
                 </Text>
               </BlockStack>
               <BlockStack gap="200">
-                <Text variant="bodyMd" fontWeight="semibold">
+                <Text variant="bodyMd" as="p" fontWeight="semibold">
                   Q: ラベル枚数が上限に達したらどうなりますか？
                 </Text>
-                <Text variant="bodyMd">
+                <Text variant="bodyMd" as="p">
                   A: 上位プランへのアップグレードをお勧めします。翌月1日にリセットされます。
                 </Text>
               </BlockStack>

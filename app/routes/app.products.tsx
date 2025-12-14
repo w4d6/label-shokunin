@@ -308,7 +308,7 @@ export default function Products() {
                 {selectedResources.length > 0 && (
                   <InlineStack gap="200" align="center">
                     <Badge tone="info">
-                      {selectedResources.length}件選択中
+                      {`${selectedResources.length}件選択中`}
                     </Badge>
                   </InlineStack>
                 )}
